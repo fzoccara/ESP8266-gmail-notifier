@@ -40,6 +40,19 @@ void readDefaults(){
           strcpy(host, json["host"]);
           strcpy(url, json["url"]);
           strcpy(httpsPort, json["httpsPort"]);
+
+          #if defined(debug) && debug == true
+          // if you get here you have connected to the WiFi
+          Serial.println("Default params: ");
+          Serial.printf("\r\ncredentials: '%s'\r\n", credentials);
+          Serial.printf("\r\nalertString: '%s'\r\n", alertString);
+          Serial.printf("\r\ncheckInterval: '%s'\r\n", checkInterval);
+          Serial.printf("\r\nfailedTries: '%s'\r\n", failedTries);
+          Serial.printf("\r\nfingerprint: '%s'\r\n", fingerprint);
+          Serial.printf("\r\nhost: '%s'\r\n", host);
+          Serial.printf("\r\nurl: '%s'\r\n", url);
+          Serial.printf("\r\nhttpsPort: '%d'\r\n", atoi(&httpsPort[0]));
+          #endif
           
         } else {
           #if defined(debug) && debug == true

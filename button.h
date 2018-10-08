@@ -1,5 +1,5 @@
 
-void resetButtonOn();
+void resetButtonOn(); 
 
 /* RESET BUTTON PRESSED UP */
 void resetButtonOnFinal() {

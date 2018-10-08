@@ -2,7 +2,7 @@
 int getAlerts() {    // a function to get the number of unread emails in your Gmail inbox
   WiFiClientSecure client; // Use WiFiClientSecure class to create TLS (HTTPS) connection
   #if defined(debug) && debug == true
-  Serial.printf("Connecting to %s:%d ... \r\n", host, httpsPort);
+  Serial.printf("Connecting to %s:%d ... \r\n", host, atoi(&httpsPort[0]));
   #endif
   if (!client.connect(host, atoi(&httpsPort[0]))) {   // Connect to the Gmail server, on port 443
     #if defined(debug) && debug == true
@@ -14,6 +14,8 @@ int getAlerts() {    // a function to get the number of unread emails in your Gm
   #if defined(debug) && debug == true
   Serial.print("Check Certificate: ");
   Serial.println(fingerprint);
+  Serial.print("Requesting URL: ");
+  Serial.println(url);
   #endif
 
   if (client.verify(fingerprint, host)) {   // Check the SHA-1 fingerprint of the SSL certificate
@@ -27,10 +29,6 @@ int getAlerts() {    // a function to get the number of unread emails in your Gm
     return -1;
   }
 
-  #if defined(debug) && debug == true
-  Serial.print("Requesting URL: ");
-  Serial.println(url);
-  #endif
 
   String request = String("GET ") + url + " HTTP/1.1\r\n" + 
                "Host: " + host + "\r\n" +
@@ -52,9 +50,9 @@ int getAlerts() {    // a function to get the number of unread emails in your Gm
     
     client.readStringUntil('<');                 // read until the first XML tag
     tagname = client.readStringUntil('>');       // read until the end of this tag to get the tag name
-    #if defined(debug) && debug == true
-    Serial.println(tagname);   
-    #endif
+    //#if defined(debug) && debug == true
+    //Serial.println(tagname);   
+    //#endif
     if (tagname == "fullcount") {                // if the tag is <fullcount>, 
                                                  // the next string will be the number of unread emails
       unreadStr = client.readStringUntil('<');   // read until the closing tag (</fullcount>)
@@ -77,9 +75,9 @@ int getAlerts() {    // a function to get the number of unread emails in your Gm
             if (tagname == "title") {
               title = client.readStringUntil('<');  
               if(title.indexOf(alertString) > 0){
-                  //#if defined(debug) && debug == true
-                  //Serial.println(title);
-                  //#endif
+                  #if defined(debug) && debug == true
+                  Serial.println(title);
+                  #endif
                   alerts++;
               }
             }

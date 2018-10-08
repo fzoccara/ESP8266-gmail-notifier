@@ -10,4 +10,3 @@ void blinkNTimes(int times){
     digitalWrite(LIGHT_PIN, LOW);
   }
 }
-

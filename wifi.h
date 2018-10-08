@@ -18,10 +18,10 @@ void wifiConnect() {
   Serial.println("Not Connected to WIFI try to connect, otherwise create esp own wifi prefix-chipID");
   #endif
   
-  WiFiManagerParameter custom_credentials("credentials", "Email credentials (see docs)", credentials, 45);
-  WiFiManagerParameter custom_alertString("alertString", "Subject alert string", alertString, 20);
+  WiFiManagerParameter custom_credentials("credentials", "Email credentials (see docs)", credentials, 100);
+  WiFiManagerParameter custom_alertString("alertString", "Subject alert string", alertString, 60);
   WiFiManagerParameter custom_checkInterval("checkInterval", "Check every XXX milliseconds", checkInterval, 6);
-  WiFiManagerParameter custom_failedTries("failedTries", "How many failed try before alerts", failedTries, 2);
+  WiFiManagerParameter custom_failedTries("failedTries", "How many failed try before alerts", failedTries, 3);
   WiFiManagerParameter custom_fingerprint("fingerprint", "SHA-1 fingerprint SSL of Gmail server", fingerprint, 60);
   WiFiManagerParameter custom_host("host", "Gmail server", host, 40);
   WiFiManagerParameter custom_url("url", "Gmail path", url, 60);
@@ -57,11 +57,6 @@ void wifiConnect() {
   //set minimu quality of signal so it ignores AP's under that quality
   //defaults to 8%
   //wifiManager.setMinimumSignalQuality();
-  
-  //sets timeout until configuration portal gets turned off
-  //useful to make it all retry or go to sleep
-  //in seconds
-  //wifiManager.setTimeout(120);
 
   // fetches ssid and pass from eeprom and tries to connect
   // if it does not connect it starts an access point with the specified name
@@ -85,8 +80,8 @@ void wifiConnect() {
   strcpy(host, custom_host.getValue());
   strcpy(url, custom_url.getValue());
   strcpy(httpsPort, custom_httpsPort.getValue());
-  
-  //save the custom parameters to FS
+
+  //save the custom parameters in a json to the File System
   if (shouldSaveConfig) {
     Serial.println("saving config");
     DynamicJsonBuffer jsonBuffer;
@@ -102,6 +97,19 @@ void wifiConnect() {
     json["url"] = url;
     json["httpsPort"] = httpsPort;
 
+    #if defined(debug) && debug == true
+    // if you get here you have connected to the WiFi
+    Serial.println("Save params: ");
+    Serial.printf("\r\ncredentials: '%s'\r\n", credentials);
+    Serial.printf("\r\nalertString: '%s'\r\n", alertString);
+    Serial.printf("\r\ncheckInterval: '%s'\r\n", checkInterval);
+    Serial.printf("\r\nfailedTries: '%s'\r\n", failedTries);
+    Serial.printf("\r\nfingerprint: '%s'\r\n", fingerprint);
+    Serial.printf("\r\nhost: '%s'\r\n", host);
+    Serial.printf("\r\nurl: '%s'\r\n", url);
+    Serial.printf("\r\nhttpsPort: '%d'\r\n", atoi(&httpsPort[0]));
+    #endif
+    
     File configFile = SPIFFS.open("/config.json", "w");
     if (!configFile) {
       Serial.println("failed to open config file for writing");

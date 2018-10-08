@@ -8,7 +8,7 @@ String device = prefix + String(ESP.getChipId());
 // The Base64 encoded version of your Gmail login credentials (see below)
 // following the shell command for filling up the above variable: 
 // $ echo -n 'email.address@gmail.com:password' | base64
-char credentials[45];
+char credentials[100];
 
 // The SHA-1 fingerprint of the SSL certificate for the Gmail server (see below)
 // following the shell command for filling up the above variable: 
@@ -16,7 +16,7 @@ char credentials[45];
 char fingerprint[60] = "F5 87 01 6E C7 A0 3A B8 06 7E F4 0A 96 C1 EB 67 C1 7C 05 6B";
 
 // string to search inside the title of the email to mark as alert
-char alertString[20] = "down";
+char alertString[60] = "down";
 
 char host[40] = "mail.google.com"; // the Gmail server
 char url[60] = "/mail/feed/atom"; // the Gmail feed url
@@ -26,7 +26,7 @@ char httpsPort[6] = "443"; // the port to connect to the email server
 char checkInterval[6] = "5000";
 
 // how many failed request are allowed before alert
-char failedTries[2] = "5";
+char failedTries[3] = "5";
 
 // light control pin
 const byte LIGHT_PIN = D7;
