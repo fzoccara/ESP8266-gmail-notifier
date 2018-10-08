@@ -11,11 +11,15 @@
 
 /* params file with default, constant values or function to retrieve them */
 #include "params.h"
-#include "fs.h"
-#include "wifi.h"
 
 /* useful functions */ 
 #include "utils.h"
+
+/* file system functions */ 
+#include "fs.h"
+
+/* wifi functions */ 
+#include "wifi.h"
 
 /* push button functions */ 
 #include "button.h"
