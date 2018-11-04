@@ -1,16 +1,38 @@
 
-void resetButtonOn(); 
+// button control pin
+const byte BUTTON_PIN = D1;
+OneButton button(BUTTON_PIN, false);
 
-/* RESET BUTTON PRESSED UP */
-void resetButtonOnFinal() {
-  detachInterrupt(BUTTON_PIN);
-  attachInterrupt(BUTTON_PIN, resetButtonOn, RISING);
-
+// This function will be called when the button was pressed 1 time
+/*void clickFn() {
   #if defined(debug) && debug == true
-  Serial.println(currentMillis);
+  Serial.println("Button click.");
+  #endif
+}*/
+  
+// This function will be called when the button was pressed 2 times in a short timeframe.
+/*void doubleclickFn() {
+  #if defined(debug) && debug == true
+  Serial.println("Button doubleclick.");
+  #endif
+}*/
+
+// This function will be called once, when the button is pressed for a long time.
+void longPressStartFn() {
+  #if defined(debug) && debug == true
+  Serial.println("Button longPress start");
   #endif
   
-  if (currentMillis + intervalFlashEeprom < millis()) {
+  buttonTimer = millis();
+}
+
+// This function will be called once, when the button is released after beeing pressed for a long time.
+void longPressStopFn() {
+  #if defined(debug) && debug == true
+  Serial.println("Button longPress stop");
+  #endif
+
+  if (millis() - buttonTimer > longPressTime) {
     #if defined(debug) && debug == true
     Serial.println("Reset Eeprom");
     #endif
@@ -19,24 +41,23 @@ void resetButtonOnFinal() {
     // do action
     formatFS();
     WifiReset();
-
+  
     #if defined(debug) && debug == true
     Serial.flush();
     #endif
   }
-}
-/* RESET BUTTON PRESSED UP */
+} 
 
-/* RESET BUTTON PRESSED DOWN */
-void resetButtonOn() {
-  #if defined(debug) && debug == true
-  Serial.println("");
-  Serial.print("Hold RESET Button 7 seconds for reset the LAMP, ");
-  Serial.println(currentMillis);
-  #endif
+void buttonSetup(){
   
-  detachInterrupt(BUTTON_PIN);
-  attachInterrupt(BUTTON_PIN, resetButtonOnFinal, FALLING);
-  currentMillis = millis();
+  pinMode(BUTTON_PIN, INPUT);
+  //button.attachClick(clickFn);
+  //button.attachDoubleClick(doubleclickFn);
+  button.attachLongPressStart(longPressStartFn);
+  //button.attachDuringLongPress(longPressFn);
+  button.attachLongPressStop(longPressStopFn);
+  
 }
-/* RESET BUTTON PRESSED DOWN */
+
+
+
